@@ -1,0 +1,12 @@
+packages = [
+  "matplotlib",
+  "plotly",
+  "pandas",
+  "geographiclib",
+  "xarray",
+  "ioos-qc",
+
+]
+
+
+
