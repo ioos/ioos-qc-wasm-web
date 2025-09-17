@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>IOOS QC Web App</title>
+  <link rel="stylesheet" href="https://pyscript.net/releases/2025.3.1/core.css" />
+  <script type="module" src="https://pyscript.net/releases/2025.3.1/core.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/plotly.js-dist@2.18.1/plotly.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- Loading wheel -->
+<div id="loadingIndicator" class="text-center" style="display: block; margin-top: 20px;">
+  <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+    <span class="sr-only">Loading...</span>
+  </div>
+  <p>Processing, please wait...</p>
+</div>
+
+<script>
+  document.addEventListener("py:ready", () => {
+    const loader = document.getElementById("loadingIndicator");
+    if (loader) loader.style.display = "none";
+  });
+</script>
+
+<div class="container my-4">
+
+  <!-- Title box -->
+  <div class="jumbotron text-center">
+    <h1 class="display-4">IOOS QC Web App</h1>
+    <p class="lead">Using PyScript to run IOOS QC in the browser.</p>
+  </div>
+
+  <!-- Data upload -->
+<div class="row align-items-center mb-4">
+  <div class="col-md-3">
+    <h5 class="mb-0">Upload your dataset:</h5>
+  </div>
+
+  <div class="col-md-3">
+    <label class="btn btn-primary mb-0" style="cursor: pointer;">
+      <i class="fa fa-upload"></i> Browse
+      <input type="file" id="fileInput" style="display: none;" />
+    </label>
+    <small id="filename-display" class="text-muted ml-2" style="word-break: break-word;"></small>
+  </div>
+
+
+  <div class="col-md-6">
+    <div class="form-row align-items-center">
+      <div class="col-auto">
+        <label for="variableSelect" class="mb-0">Main Variable to QC:</label>
+        <select class="form-control form-control-sm" id="variableSelect" style="min-width: 150px;"></select>
+      </div>
+      <div class="col-auto">
+        <label for="xVariableSelect" class="mb-0">Time variable:</label>
+        <select class="form-control form-control-sm" id="xVariableSelect" style="min-width: 120px;"></select>
+      </div>
+      <div class="col-auto">
+        <label for="yVariableSelect" class="mb-0">Depth variable:</label>
+        <select class="form-control form-control-sm" id="yVariableSelect" style="min-width: 120px;"></select>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <small id="filename-display" class="text-muted" style="word-break: break-word;"></small>
+  </div>
+</div>
+
+  <hr class="section-divider" />
+
+  <!-- Test Selection and QC Parameters -->
+<div class="row mb-4">
+  <div class="col-md-4">
+    <h5 class="mb-2">Select QC Test:</h5>
+    <select class="form-control" id="select">
+      <option value="gross_range_test">Gross Range Test</option>
+      <option value="flat_line_test">Flat Line Test</option>
+      <option value="rate_of_change_test">Rate of Change Test</option>
+      <option value="spike_test">Spike Test</option>
+    </select>
+  </div>
+
+  <div class="col-md-7 offset-md-1" id="test-params">
+    <h5 class="mb-2">Set QC Parameters:</h5>
+    <div id="params-form" class="row"></div>
+  </div>
+</div>
+
+  <div class="row mb-3">
+    <div class="col-md-3">
+      <button id="runQcBtn" class="btn btn-success">Run QC Test</button>
+    </div>
+    <div class="col-md-9">
+      <div id="message" class="alert alert-info" style="display: none;"></div>
+      <div id="defaultDataBtnContainer" style="display: none;">
+        <button id="runExampleBtn" class="btn btn-outline-primary btn-sm mt-2">
+          <i class="fa fa-play-circle"></i> Run with Example Dataset
+        </button>
+      </div>
+    </div>
+  </div>
+
+<!-- Download data button  -->
+<div class="row justify-content-end mb-3">
+  <div class="col-md-3">
+    <button id="downloadBtn" class="btn btn-success">Download Flagged Data</button>
+  </div>
+</div>
+
+  <!-- Plots -->
+  <div class="row">
+    <div class="col-md-12 p-3 shadow bg-white rounded mb-4">
+      <div id="qc_test"></div>
+    </div>
+  </div>
+
+</div>
+
+<py-script src="./qc.py" config="./web_ioos_qc.toml"></py-script>
+<script src="app.js"></script>
+
+</body>
+</html>
