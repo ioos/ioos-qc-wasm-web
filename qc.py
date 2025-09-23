@@ -206,12 +206,11 @@ async def plot(qc_test, use_defaults=False):
         try:
             # Load the DataFrame
             if uploaded_df is None:
-                show_message('No file uploaded. Using <a href="https://github.com/MOchiara/Chiara_GSoC25/releases/tag/v0.1-beta" target="_blank">default file (water_level_example_test.csv)</a> for display.')
-                document.getElementById("defaultDataBtnContainer").style.display = "block"
+                show_message('No file uploaded.')
                 return
             else:
                 df = uploaded_df
-                show_message("Uploaded file loaded and used.")
+
 
             # Get selected variable names from UI
             variable_select = js.document.getElementById("variableSelect")
@@ -224,6 +223,12 @@ async def plot(qc_test, use_defaults=False):
                 variable = "sea_surface_height_above_sea_level"
                 y_var = "z"
                 x_var = "time"
+                show_message(
+                    'Using <a href="https://github.com/ioos/ioos-qc-wasm-web/blob/main/water_level_example_test.csv" target="_blank">default file (water_level_example_test.csv)</a> for display.',
+                    "info"
+                )
+            else:
+                show_message("Uploaded file loaded and used.")
 
             # Convert time column to datetime
             df[x_var] = df[x_var].astype(str).str.strip()
@@ -395,17 +400,22 @@ def setup():
         example_btn_proxy = create_proxy(handle_example_btn)
         example_btn.addEventListener("click", example_btn_proxy)
 
-def show_message(msg, alert_type="info"):
+def show_message(msg_html, alert_type="info"):
     message_div = document.getElementById("message")
     message_div.className = f"alert alert-{alert_type}"
-    message_div.innerHTML = msg
+    while message_div.firstChild:
+        message_div.removeChild(message_div.firstChild)
+    temp_span = document.createElement("span")
+    temp_span.innerHTML = msg_html
+    message_div.appendChild(temp_span)
     message_div.style.display = "block"
+
 
 async def handle_example_btn(event):
     global uploaded_df
     try:
         show_message(
-            'Using <a href="https://github.com/MOchiara/Chiara_GSoC25/releases/tag/v0.1-beta" target="_blank">default file (water_level_example_test.csv)</a> for display.',
+            'Using <a href="https://github.com/ioos/ioos-qc-wasm-web/blob/main/water_level_example_test.csv" target="_blank">default file (water_level_example_test.csv)</a> for display.',
             "info"
         )
         document.getElementById("defaultDataBtnContainer").style.display = "none"
@@ -422,5 +432,3 @@ sys.stderr = type('stderr', (), {
 })()
 
 setup()
-
-
